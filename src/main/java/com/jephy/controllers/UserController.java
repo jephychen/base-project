@@ -1,0 +1,65 @@
+package com.jephy.controllers;
+
+import com.jephy.libs.ObjectHelper;
+import com.jephy.libs.json.JsonHelper;
+import com.jephy.models.User;
+import com.jephy.services.UserService;
+import com.jephy.utils.httpexceptions.BadRequest400Exception;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+/**
+ * Created by chenshijue on 2017/9/22.
+ */
+
+@RestController
+@RequestMapping("/users")
+public class UserController {
+
+    @Autowired
+    private UserService userService;
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public User getUser(@PathVariable String id){
+        return userService.findById(id);
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    public List<User> getUsers(){
+        return userService.findAll();
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public User addUser(@RequestBody String userJson){
+        //校验json
+        User user = null;
+        try {
+            user = (User) JsonHelper.parse(User.class, userJson);
+        } catch (Exception e) {
+            throw new BadRequest400Exception("userJson invalid");
+        }
+
+        return userService.addUser(user);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT)
+    public User updateUser(@RequestBody String userJson){
+        //校验json
+        User user = null;
+        try {
+            user = (User) JsonHelper.parse(User.class, userJson);
+        } catch (Exception e) {
+            throw new BadRequest400Exception("userJson invalid");
+        }
+
+        return userService.updateUser(user);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public void deleteUser(@PathVariable String id){
+        userService.deleteUser(id);
+    }
+
+}
