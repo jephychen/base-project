@@ -23,12 +23,6 @@ public class User {
 
     private String avatar;
 
-    private int number;
-
-    private List<String> strs;
-
-    private List<Integer> ints;
-
     private long created;
 
     private long modified;
@@ -83,30 +77,6 @@ public class User {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
-    }
-
-    public int getNumber() {
-        return number;
-    }
-
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
-    public List<String> getStrs() {
-        return strs;
-    }
-
-    public void setStrs(List<String> strs) {
-        this.strs = strs;
-    }
-
-    public List<Integer> getInts() {
-        return ints;
-    }
-
-    public void setInts(List<Integer> ints) {
-        this.ints = ints;
     }
 
     public long getCreated() {

@@ -51,6 +51,8 @@ public class UserService {
     public User addUser(User user){
         if (user.getEmail() == null && user.getPhone() == null)
             throw new BadRequest400Exception("one of phone and email must be provided");
+        if (user.getPassword() == null)
+            throw new BadRequest400Exception("password should be provided");
 
         //检查phone和email是否重复
         User existedUser = null;

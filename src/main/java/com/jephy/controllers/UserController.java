@@ -1,5 +1,6 @@
 package com.jephy.controllers;
 
+import com.jephy.aop.annotation.AuthAdmin;
 import com.jephy.libs.json.JsonHelper;
 import com.jephy.models.User;
 import com.jephy.services.UserService;
@@ -10,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by chenshijue on 2017/9/22.
@@ -22,8 +25,10 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @AuthAdmin
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public User getUser(@PathVariable String id){
+    public User getUser(@PathVariable String id, HttpServletRequest request){
+        String jwt = request.getHeader("jwt");
         return userService.findById(id);
     }
 
