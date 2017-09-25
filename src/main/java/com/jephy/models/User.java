@@ -1,7 +1,6 @@
 package com.jephy.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.data.annotation.Id;
 
 import java.util.List;
