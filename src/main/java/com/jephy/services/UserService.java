@@ -1,5 +1,7 @@
 package com.jephy.services;
 
+import com.jephy.libs.Const;
+import com.jephy.libs.EncryptHelper;
 import com.jephy.libs.ObjectHelper;
 import com.jephy.models.User;
 import com.jephy.repositories.UserRepository;
@@ -12,8 +14,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * Created by chenshijue on 2017/9/22.
@@ -60,6 +60,9 @@ public class UserService {
         if (existedUser != null)
             throw new Forbidden403Exception("Phone or email exists");
 
+        //加密密码
+        user.setPassword(EncryptHelper.encrypt(user.getPassword(), Const.PASSWORD_KEY));
+
         user.setCreated(System.currentTimeMillis());
         return userRepository.save(user);
     }
@@ -90,6 +93,10 @@ public class UserService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        //加密密码
+        if (user.getPassword() != null)
+            dbUser.setPassword(EncryptHelper.encrypt(user.getPassword(), Const.PASSWORD_KEY));
 
         dbUser.setModified(System.currentTimeMillis());
         return userRepository.save(dbUser);
