@@ -1,6 +1,5 @@
 package com.jephy.libs;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -11,7 +10,7 @@ public class ObjectHelper {
     /*
     * 如果newObj属性不为null，则替换oldObj中的相同属性
     * */
-    public static void fillNewObj(Object oldObj, final Object newObj) throws Exception {
+    public static void updateObj(Object oldObj, final Object newObj) throws Exception {
         //只处理同一个类型的对象
         if (oldObj.getClass() != newObj.getClass())
             return;

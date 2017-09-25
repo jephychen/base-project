@@ -1,14 +1,15 @@
 package com.jephy.controllers;
 
-import com.jephy.libs.ObjectHelper;
 import com.jephy.libs.json.JsonHelper;
 import com.jephy.models.User;
 import com.jephy.services.UserService;
 import com.jephy.utils.httpexceptions.BadRequest400Exception;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * Created by chenshijue on 2017/9/22.
@@ -27,8 +28,13 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<User> getUsers(){
-        return userService.findAll();
+    public Page<User> getUsers(
+            @PageableDefault(value = 10, sort = {"created"}, direction = Sort.Direction.DESC) Pageable pageable,
+            String gender){
+        if (gender != null) {
+            return userService.findByGender(gender, pageable);
+        }
+        return userService.findAll(pageable);
     }
 
     @RequestMapping(method = RequestMethod.POST)

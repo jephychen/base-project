@@ -1,5 +1,7 @@
 package com.jephy.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.data.annotation.Id;
 
 import java.util.List;
@@ -16,6 +18,8 @@ public class User {
 
     private String email;
 
+    private String gender;
+
     private String password;
 
     private String avatar;
@@ -26,22 +30,11 @@ public class User {
 
     private List<Integer> ints;
 
+    private long created;
+
+    private long modified;
+
     public User() {
-    }
-
-    public User(String phone, String email, String password, String avatar) {
-        this.phone = phone;
-        this.email = email;
-        this.password = password;
-        this.avatar = avatar;
-    }
-
-    public User(String id, String phone, String email, String password, String avatar) {
-        this.id = id;
-        this.phone = phone;
-        this.email = email;
-        this.password = password;
-        this.avatar = avatar;
     }
 
     public String getId() {
@@ -68,6 +61,15 @@ public class User {
         this.email = email;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
@@ -106,5 +108,21 @@ public class User {
 
     public void setInts(List<Integer> ints) {
         this.ints = ints;
+    }
+
+    public long getCreated() {
+        return created;
+    }
+
+    public void setCreated(long created) {
+        this.created = created;
+    }
+
+    public long getModified() {
+        return modified;
+    }
+
+    public void setModified(long modified) {
+        this.modified = modified;
     }
 }

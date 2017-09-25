@@ -1,12 +1,13 @@
 package com.jephy.services;
 
 import com.jephy.libs.ObjectHelper;
-import com.jephy.libs.json.JsonHelper;
 import com.jephy.models.User;
 import com.jephy.repositories.UserRepository;
 import com.jephy.utils.httpexceptions.BadRequest400Exception;
 import com.jephy.utils.httpexceptions.Forbidden403Exception;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -39,8 +40,12 @@ public class UserService {
         return userRepository.findByPhone(phone);
     }
 
-    public List<User> findAll(){
-        return userRepository.findAll();
+    public Page<User> findByGender(String gender, Pageable pageable) {
+        return userRepository.findByGender(gender, pageable);
+    }
+
+    public Page<User> findAll(Pageable pageable){
+        return userRepository.findAll(pageable);
     }
 
     public User addUser(User user){
@@ -48,11 +53,14 @@ public class UserService {
             throw new BadRequest400Exception("one of phone and email must be provided");
 
         //检查phone和email是否重复
-        User existedUser = user.getEmail() == null ? userRepository.findByPhone(user.getPhone())
-                : userRepository.findByEmail(user.getEmail());
+        User existedUser = null;
+        if (user.getEmail() != null) existedUser = userRepository.findByEmail(user.getEmail());
+        if (user.getPhone() != null && existedUser == null)
+            existedUser = userRepository.findByPhone(user.getPhone());
         if (existedUser != null)
             throw new Forbidden403Exception("Phone or email exists");
 
+        user.setCreated(System.currentTimeMillis());
         return userRepository.save(user);
     }
 
@@ -78,11 +86,12 @@ public class UserService {
 
         User dbUser = userRepository.findById(user.getId());
         try {
-            ObjectHelper.fillNewObj(dbUser, user);
+            ObjectHelper.updateObj(dbUser, user);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        dbUser.setModified(System.currentTimeMillis());
         return userRepository.save(dbUser);
     }
 
