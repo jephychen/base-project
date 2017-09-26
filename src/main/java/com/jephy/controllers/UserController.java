@@ -12,8 +12,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * Created by chenshijue on 2017/9/22.
  */
@@ -27,8 +25,7 @@ public class UserController {
 
     @AuthAdmin
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public User getUser(@PathVariable String id, HttpServletRequest request){
-        String jwt = request.getHeader("jwt");
+    public User getUser(@PathVariable String id){
         return userService.findById(id);
     }
 
