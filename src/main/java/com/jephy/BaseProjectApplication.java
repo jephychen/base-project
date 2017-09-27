@@ -1,6 +1,6 @@
 package com.jephy;
 
-import com.jephy.aop.aspect.AdminAspect;
+import com.jephy.aop.aspect.AuthAspect;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -11,8 +11,8 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 public class BaseProjectApplication {
 
 	@Bean
-	public AdminAspect adminAspect(){
-		return new AdminAspect();
+	public AuthAspect authAspect(){
+		return new AuthAspect();
 	}
 
 	public static void main(String[] args) {

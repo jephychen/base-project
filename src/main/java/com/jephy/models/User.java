@@ -2,6 +2,7 @@ package com.jephy.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 
 import java.util.List;
 
@@ -10,12 +11,23 @@ import java.util.List;
  */
 public class User {
 
+    @Transient
+    public static final String ROLE_ADMIN = "admin";
+
+    @Transient
+    public static final String ROLE_COMMON = "common";
+
+    @Transient
+    public static final String ROLE_GUEST = "guest";
+
     @Id
     private String id;
 
     private String phone;
 
     private String email;
+
+    private String role;
 
     private String gender;
 
@@ -52,6 +64,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getGender() {

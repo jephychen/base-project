@@ -3,6 +3,7 @@ package com.jephy.controllers;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -16,6 +17,7 @@ public class DemoController {
     @RequestMapping("/test")
     public String demo(String code, HttpServletRequest request, HttpServletResponse response){
         response.setStatus(500);
+        response.addCookie(new Cookie("jwt", "1111"));
         return request.getMethod() + code;
     }
 

@@ -65,6 +65,7 @@ public class UserService {
         //加密密码
         user.setPassword(EncryptHelper.encrypt(user.getPassword(), Const.PASSWORD_KEY));
 
+        user.setRole(User.ROLE_COMMON);
         user.setCreated(System.currentTimeMillis());
         return userRepository.save(user);
     }
