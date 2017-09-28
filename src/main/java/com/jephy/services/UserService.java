@@ -3,6 +3,7 @@ package com.jephy.services;
 import com.jephy.libs.Const;
 import com.jephy.libs.EncryptHelper;
 import com.jephy.libs.ObjectHelper;
+import com.jephy.libs.http.CookieHelper;
 import com.jephy.models.User;
 import com.jephy.repositories.UserRepository;
 import com.jephy.utils.httpexceptions.BadRequest400Exception;
@@ -91,6 +92,7 @@ public class UserService {
         }
 
         User dbUser = userRepository.findById(user.getId());
+
         try {
             ObjectHelper.updateObj(dbUser, user);
         } catch (Exception e) {

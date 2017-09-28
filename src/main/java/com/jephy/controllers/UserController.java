@@ -2,16 +2,21 @@ package com.jephy.controllers;
 
 import com.jephy.aop.annotation.AuthAdmin;
 import com.jephy.aop.annotation.AuthCommon;
+import com.jephy.libs.http.CookieHelper;
 import com.jephy.libs.json.JsonHelper;
 import com.jephy.models.User;
 import com.jephy.services.UserService;
 import com.jephy.utils.httpexceptions.BadRequest400Exception;
+import com.jephy.utils.httpexceptions.Forbidden403Exception;
+import com.mongodb.BasicDBObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by chenshijue on 2017/9/22.
@@ -56,7 +61,7 @@ public class UserController {
 
     @AuthCommon
     @RequestMapping(method = RequestMethod.PUT)
-    public User updateUser(@RequestBody String userJson){
+    public User updateUser(@RequestBody String userJson, HttpServletRequest request){
         //校验json
         User user = null;
         try {
@@ -64,6 +69,11 @@ public class UserController {
         } catch (Exception e) {
             throw new BadRequest400Exception("userJson invalid");
         }
+
+        //如果普通用户不是修改的自己则无权限
+        BasicDBObject jwtPayload = CookieHelper.getJwtPayload(request);
+        if (!jwtPayload.get("role").equals("admin") && !user.getId().equals(jwtPayload.get("id")))
+            throw new Forbidden403Exception("user not authorized");
 
         return userService.updateUser(user);
     }

@@ -37,7 +37,7 @@ public class JwtHelper {
     public static BasicDBObject getPayload(String jwt, StringBuffer reason) throws IOException {
         String[] parts = jwt.split("\\.");
         if (parts.length != 3){
-            reason.append("jwt invalid");
+            if (reason != null) reason.append("jwt invalid");
             return null;
         }
 
@@ -47,13 +47,13 @@ public class JwtHelper {
             BasicDBObject header = EncryptHelper.base64Decode(parts[0]);
             String expired = header.getString("exp");
             if (System.currentTimeMillis() > Long.parseLong(expired)){
-                reason.append("jwt expired");
+                if (reason != null) reason.append("jwt expired");
                 return null;
             }
             return EncryptHelper.base64Decode(parts[1]);
         }
 
-        reason.append("jwt has been tampered");
+        if (reason != null) reason.append("jwt has been tampered");
         return null;
     }
 

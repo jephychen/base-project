@@ -57,6 +57,9 @@ public class AuthAspect {
         }
         if (payload == null) throw new BadRequest400Exception(jwtReason.toString());
 
+        //如果为管理员则直接返回
+        if (payload.get("role").equals("admin")) return;
+
         if (!payload.get("role").equals(role)) throw new Forbidden403Exception("user not authorized");
     }
 
