@@ -1,5 +1,6 @@
 package com.jephy.aop.aspect;
 
+import com.jephy.libs.Const;
 import com.jephy.libs.JwtHelper;
 import com.jephy.libs.http.CookieHelper;
 import com.jephy.models.User;
@@ -42,18 +43,19 @@ public class AuthAspect {
     }
 
     protected void doCheckRole(String role){
-        Cookie cookie = CookieHelper.getCookie(request, "jwt");
+        Cookie cookie = CookieHelper.getCookie(request, Const.JWT_COOKIE_NAME);
         if (cookie == null)
-            throw new BadRequest400Exception("can't get jwt");
+            throw new BadRequest400Exception("please login");
 
         BasicDBObject payload = null;
+        StringBuffer jwtReason = new StringBuffer();
         try {
-            JwtHelper.getPayload(cookie.getValue());
+            payload = JwtHelper.getPayload(cookie.getValue(), jwtReason);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new BadRequest400Exception("can't parse jwt");
+            throw new BadRequest400Exception(jwtReason.toString());
         }
-        if (payload == null) throw new BadRequest400Exception("can't parse jwt");
+        if (payload == null) throw new BadRequest400Exception(jwtReason.toString());
 
         if (!payload.get("role").equals(role)) throw new Forbidden403Exception("user not authorized");
     }

@@ -1,6 +1,7 @@
 package com.jephy.controllers;
 
 import com.jephy.aop.annotation.AuthAdmin;
+import com.jephy.aop.annotation.AuthCommon;
 import com.jephy.libs.json.JsonHelper;
 import com.jephy.models.User;
 import com.jephy.services.UserService;
@@ -23,12 +24,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @AuthAdmin
+    @AuthCommon
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public User getUser(@PathVariable String id){
         return userService.findById(id);
     }
 
+    @AuthAdmin
     @RequestMapping(method = RequestMethod.GET)
     public Page<User> getUsers(
             @PageableDefault(value = 10, sort = {"created"}, direction = Sort.Direction.DESC) Pageable pageable,
@@ -52,6 +54,7 @@ public class UserController {
         return userService.addUser(user);
     }
 
+    @AuthCommon
     @RequestMapping(method = RequestMethod.PUT)
     public User updateUser(@RequestBody String userJson){
         //校验json
@@ -65,6 +68,7 @@ public class UserController {
         return userService.updateUser(user);
     }
 
+    @AuthAdmin
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public void deleteUser(@PathVariable String id){
         userService.deleteUser(id);

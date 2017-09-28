@@ -109,4 +109,22 @@ public class UserService {
         userRepository.delete(id);
     }
 
+    public User checkLogin(User user){
+        User existUser = null;
+        if (user.getEmail() != null)
+            existUser = userRepository.findByEmail(user.getEmail());
+        else if (user.getPhone() != null)
+            existUser = userRepository.findByPhone(user.getPhone());
+
+        //如果找不到用户
+        if (existUser == null) throw new Forbidden403Exception("no user found");
+
+        //加密后匹配
+        String encryPwd = EncryptHelper.encrypt(user.getPassword(), Const.PASSWORD_KEY);
+        if (!existUser.getPassword().equals(encryPwd))
+            throw new Forbidden403Exception("password error");
+
+        return existUser;
+    }
+
 }

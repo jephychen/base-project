@@ -23,8 +23,8 @@ public class EncryptHelper {
      * */
     public static String base64EncodeMap(Map<String, String> json) throws UnsupportedEncodingException {
         String jsonStr = JSON.serialize(json);
-        String s = new BASE64Encoder().encode(jsonStr.getBytes("utf-8"));
-        return s;
+        String s = new BASE64Encoder().encode(jsonStr.getBytes());
+        return s.replaceAll("\n", "");
     }
 
     /**
@@ -32,7 +32,7 @@ public class EncryptHelper {
      * */
     public static BasicDBObject base64Decode(String str) throws IOException {
         byte[] jsonByte = new BASE64Decoder().decodeBuffer(str);
-        String jsonStr = new String(jsonByte, "utf-8");
+        String jsonStr = new String(jsonByte);
         return (BasicDBObject) JSON.parse(jsonStr);
     }
 

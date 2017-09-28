@@ -14,4 +14,9 @@ public interface Const {
      * 密码加密密钥
      * */
      final static String PASSWORD_KEY = "chemixnodRTET#453#$+";
+
+     /*
+     * jwt的cookie名称
+     * **/
+     final static String JWT_COOKIE_NAME = "jwt";
 }

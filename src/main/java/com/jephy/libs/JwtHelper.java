@@ -34,10 +34,12 @@ public class JwtHelper {
      * @param jwt 需要解析的jwt字符串
      * @return 返回payload接口，如果jwt超时或者非法，则为null
      * */
-    public static BasicDBObject getPayload(String jwt) throws IOException {
+    public static BasicDBObject getPayload(String jwt, StringBuffer reason) throws IOException {
         String[] parts = jwt.split("\\.");
-        if (parts.length != 3)
+        if (parts.length != 3){
+            reason.append("jwt invalid");
             return null;
+        }
 
         String toEncrypt = parts[0] + "." + parts[1];
         String mySign = EncryptHelper.encrypt(toEncrypt, Const.JWT_KEY);
@@ -45,11 +47,13 @@ public class JwtHelper {
             BasicDBObject header = EncryptHelper.base64Decode(parts[0]);
             String expired = header.getString("exp");
             if (System.currentTimeMillis() > Long.parseLong(expired)){
+                reason.append("jwt expired");
                 return null;
             }
             return EncryptHelper.base64Decode(parts[1]);
         }
 
+        reason.append("jwt has been tampered");
         return null;
     }
 
