@@ -1,12 +1,21 @@
 package com.jephy.controllers;
 
+import com.jephy.libs.http.FileDownloadHelper;
 import com.jephy.services.storage.StorageService;
+import com.jephy.utils.httpexceptions.InternalServerError500Exception;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by chenshijue on 2017/9/28.
@@ -18,6 +27,23 @@ public class FileController {
 
     @Autowired
     private StorageService storageService;
+
+    @RequestMapping(method = RequestMethod.GET)
+    public List<String> filesList(){
+        return storageService.loadAll().map(path -> path.getFileName().toString()).
+                collect(Collectors.toList());
+    }
+
+    @RequestMapping(value = "/{filename:.+}", method = RequestMethod.GET)
+    public void getFile(@PathVariable String filename, HttpServletResponse response){
+        File file = storageService.load(filename).toFile();
+        try {
+            FileDownloadHelper.downloadFile(response, file);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new InternalServerError500Exception("file download error");
+        }
+    }
 
     @RequestMapping(method = RequestMethod.POST)
     public void uploadFile(@RequestParam("file") MultipartFile file){
