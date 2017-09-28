@@ -20,9 +20,8 @@ public class FileController {
     private StorageService storageService;
 
     @RequestMapping(method = RequestMethod.POST)
-    public String uploadFile(@RequestParam("file") MultipartFile file){
+    public void uploadFile(@RequestParam("file") MultipartFile file){
         storageService.store(file);
-        return storageService.getRootLocation().toString();
     }
 
 }
