@@ -1,5 +1,6 @@
 package com.jephy.controllers;
 
+import com.jephy.aop.annotation.AuthCommon;
 import com.jephy.libs.http.FileDownloadHelper;
 import com.jephy.services.storage.StorageService;
 import com.jephy.utils.httpexceptions.InternalServerError500Exception;
@@ -7,13 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,8 +31,9 @@ public class FileController {
                 collect(Collectors.toList());
     }
 
+    @AuthCommon
     @RequestMapping(value = "/{filename:.+}", method = RequestMethod.GET)
-    public void getFile(@PathVariable String filename, HttpServletResponse response){
+    public void downloadFile(@PathVariable String filename, HttpServletResponse response){
         File file = storageService.load(filename).toFile();
         try {
             FileDownloadHelper.downloadFile(response, file);
@@ -45,6 +43,7 @@ public class FileController {
         }
     }
 
+    @AuthCommon
     @RequestMapping(method = RequestMethod.POST)
     public void uploadFile(@RequestParam("file") MultipartFile file){
         storageService.store(file);
