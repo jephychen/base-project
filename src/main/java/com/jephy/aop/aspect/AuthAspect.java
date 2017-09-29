@@ -7,14 +7,15 @@ import com.jephy.models.User;
 import com.jephy.utils.httpexceptions.BadRequest400Exception;
 import com.jephy.utils.httpexceptions.Forbidden403Exception;
 import com.mongodb.BasicDBObject;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Created by chenshijue on 2017/9/25.
@@ -61,6 +62,50 @@ public class AuthAspect {
         if (payload.get("role").equals("admin")) return;
 
         if (!payload.get("role").equals(role)) throw new Forbidden403Exception("user not authorized");
+    }
+
+    @Autowired
+    private HttpServletResponse response;
+
+    @Value("${web.session.expire.time}")
+    private int sessionExpireMinute;
+
+    @AfterReturning("pointcutAdmin()")
+    public void resetCookieAdmin(){
+        resetCookie();
+    }
+
+    @AfterReturning("pointcutCommon()")
+    public void resetCookieCommon(){
+        resetCookie();
+    }
+
+    protected void resetCookie(){
+        Cookie cookie = CookieHelper.getCookie(request, Const.JWT_COOKIE_NAME);
+        if (cookie == null)  return;
+
+        BasicDBObject payload = null;
+        try {
+            payload = JwtHelper.getPayload(cookie.getValue(), null);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        if (payload == null) return;
+
+        String jwt = null;
+        try {
+            jwt = JwtHelper.genJwt(payload.toMap(), sessionExpireMinute * 60);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        if (jwt == null) return;
+
+        Cookie jwtCookie = new Cookie(Const.JWT_COOKIE_NAME, jwt);
+        jwtCookie.setMaxAge(Const.MAX_SESSION_EXPIRE);
+        response.addCookie(jwtCookie);
     }
 
 }

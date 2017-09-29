@@ -33,8 +33,6 @@ public class SessionController {
     @Value("${web.session.expire.time}")
     private int sessionExpireMinute;
 
-    public static final int MAX_SESSION_EXPIRE = 60 * 60 * 24 * 30;
-
     @Autowired
     private UserService userService;
 
@@ -68,8 +66,8 @@ public class SessionController {
             throw new InternalServerError500Exception("login error");
         }
 
-        Cookie jwtCookie = new Cookie("jwt", jwt);
-        jwtCookie.setMaxAge(MAX_SESSION_EXPIRE);
+        Cookie jwtCookie = new Cookie(Const.JWT_COOKIE_NAME, jwt);
+        jwtCookie.setMaxAge(Const.MAX_SESSION_EXPIRE);
         response.addCookie(jwtCookie);
     }
 

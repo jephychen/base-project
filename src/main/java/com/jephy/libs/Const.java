@@ -19,4 +19,11 @@ public interface Const {
      * jwt的cookie名称
      * **/
      final static String JWT_COOKIE_NAME = "jwt";
+
+
+     /*
+     * cookie最大存活时间
+     * **/
+     final static int MAX_SESSION_EXPIRE = 60 * 60 * 24 * 30;
+
 }
