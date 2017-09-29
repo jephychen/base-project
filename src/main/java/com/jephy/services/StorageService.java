@@ -9,11 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.stream.Stream;
 
 @Service
@@ -23,6 +22,12 @@ public class StorageService {
 
     public StorageService(@Value("${web.upload.path}") String path) {
         this.rootLocation = Paths.get(path);
+
+        //如果目录不存在则新建
+        File locationFile = rootLocation.toFile();
+        if (!locationFile.exists()){
+            locationFile.mkdirs();
+        }
     }
 
     public void store(MultipartFile file) {
@@ -30,7 +35,9 @@ public class StorageService {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
             }
-            Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()));
+
+            Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()),
+                    StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
         }
@@ -41,7 +48,10 @@ public class StorageService {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
             }
-            Files.copy(file.getInputStream(), dest.resolve(file.getOriginalFilename()));
+
+
+            Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()),
+                    StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
         }
@@ -90,7 +100,4 @@ public class StorageService {
         }
     }
 
-    public Path getRootLocation(){
-        return rootLocation;
-    }
 }
