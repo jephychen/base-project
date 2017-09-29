@@ -1,8 +1,8 @@
-package com.jephy.services.storage;
+package com.jephy.services;
 
 import com.jephy.utils.httpexceptions.StorageException;
 import com.jephy.utils.httpexceptions.StorageFileNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -17,16 +17,14 @@ import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 @Service
-public class FileSystemStorageService implements StorageService {
+public class StorageService {
 
     private final Path rootLocation;
 
-    @Autowired
-    public FileSystemStorageService(StorageProperties properties) {
-        this.rootLocation = Paths.get(properties.getLocation());
+    public StorageService(@Value("${web.upload.path}") String path) {
+        this.rootLocation = Paths.get(path);
     }
 
-    @Override
     public void store(MultipartFile file) {
         try {
             if (file.isEmpty()) {
@@ -49,7 +47,6 @@ public class FileSystemStorageService implements StorageService {
         }
     }
 
-    @Override
     public Stream<Path> loadAll() {
         try {
             return Files.walk(this.rootLocation, 1)
@@ -61,12 +58,10 @@ public class FileSystemStorageService implements StorageService {
 
     }
 
-    @Override
     public Path load(String filename) {
         return rootLocation.resolve(filename);
     }
 
-    @Override
     public Resource loadAsResource(String filename) {
         try {
             Path file = load(filename);
@@ -83,12 +78,10 @@ public class FileSystemStorageService implements StorageService {
         }
     }
 
-    @Override
     public void deleteAll() {
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
     }
 
-    @Override
     public void init() {
         try {
             Files.createDirectory(rootLocation);

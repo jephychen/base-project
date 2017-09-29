@@ -2,17 +2,15 @@ package com.jephy.controllers;
 
 import com.jephy.aop.annotation.AuthCommon;
 import com.jephy.services.DownloadService;
-import com.jephy.services.storage.StorageService;
+import com.jephy.services.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -52,8 +50,8 @@ public class FileController {
 
     @AuthCommon
     @RequestMapping(method = RequestMethod.POST)
-    public void uploadFiles(HttpServletRequest request){
-        List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
+    public void uploadFiles(MultipartHttpServletRequest request){
+        List<MultipartFile> files = request.getFiles("file");
 
         for (MultipartFile file : files){
             storageService.store(file);
