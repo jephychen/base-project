@@ -1,8 +1,8 @@
 package com.jephy.controllers;
 
 import com.jephy.aop.annotation.AuthCommon;
-import com.jephy.services.DownloadService;
-import com.jephy.services.StorageService;
+import com.jephy.services.io.DownloadService;
+import com.jephy.services.io.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

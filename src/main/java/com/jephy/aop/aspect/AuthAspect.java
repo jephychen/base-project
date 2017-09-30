@@ -1,5 +1,6 @@
 package com.jephy.aop.aspect;
 
+import com.jephy.api.JwtHandler;
 import com.jephy.libs.Const;
 import com.jephy.libs.JwtHelper;
 import com.jephy.libs.http.CookieHelper;
@@ -10,6 +11,7 @@ import com.mongodb.BasicDBObject;
 import org.aspectj.lang.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +23,7 @@ import java.io.UnsupportedEncodingException;
  * Created by chenshijue on 2017/9/25.
  */
 
+@Component
 @Aspect
 public class AuthAspect {
 
@@ -70,6 +73,9 @@ public class AuthAspect {
     @Value("${web.session.expire.time}")
     private int sessionExpireMinute;
 
+    @Autowired
+    private JwtHandler jwtHandler;
+
     @AfterReturning("pointcutAdmin()")
     public void resetCookieAdmin(){
         resetCookie();
@@ -103,9 +109,7 @@ public class AuthAspect {
 
         if (jwt == null) return;
 
-        Cookie jwtCookie = new Cookie(Const.JWT_COOKIE_NAME, jwt);
-        jwtCookie.setMaxAge(Const.MAX_SESSION_EXPIRE);
-        response.addCookie(jwtCookie);
+        jwtHandler.handleJwt(jwt, response);
     }
 
 }

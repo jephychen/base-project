@@ -1,5 +1,6 @@
 package com.jephy.controllers;
 
+import com.jephy.api.JwtHandler;
 import com.jephy.libs.Const;
 import com.jephy.libs.JwtHelper;
 import com.jephy.libs.http.CookieHelper;
@@ -36,6 +37,9 @@ public class SessionController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private JwtHandler jwtHandler;
+
     @RequestMapping(method = RequestMethod.POST)
     public void login(@RequestBody String userInfo, HttpServletResponse response){
         if (userInfo == null) throw new BadRequest400Exception("not user info found");
@@ -66,9 +70,7 @@ public class SessionController {
             throw new InternalServerError500Exception("login error");
         }
 
-        Cookie jwtCookie = new Cookie(Const.JWT_COOKIE_NAME, jwt);
-        jwtCookie.setMaxAge(Const.MAX_SESSION_EXPIRE);
-        response.addCookie(jwtCookie);
+        jwtHandler.handleJwt(jwt, response);
     }
 
     @RequestMapping(method = RequestMethod.DELETE)

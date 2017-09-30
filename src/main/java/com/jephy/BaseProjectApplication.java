@@ -10,11 +10,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @SpringBootApplication
 public class BaseProjectApplication {
 
-	@Bean
-	public AuthAspect authAspect(){
-		return new AuthAspect();
-	}
-
 	public static void main(String[] args) {
 		SpringApplication.run(BaseProjectApplication.class, args);
 	}

@@ -1,4 +1,4 @@
-package com.jephy.services;
+package com.jephy.services.io;
 
 import com.jephy.utils.httpexceptions.StorageException;
 import com.jephy.utils.httpexceptions.StorageFileNotFoundException;
