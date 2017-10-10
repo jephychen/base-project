@@ -1,5 +1,6 @@
 package com.jephy.api;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -8,5 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 public interface JwtHandler {
 
     void handleJwt(String jwt, HttpServletResponse response);
+
+    void removeJwt(HttpServletRequest request, HttpServletResponse response);
 
 }

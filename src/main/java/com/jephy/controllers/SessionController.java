@@ -75,11 +75,7 @@ public class SessionController {
 
     @RequestMapping(method = RequestMethod.DELETE)
     public void logout(HttpServletRequest request, HttpServletResponse response) {
-        Cookie jwtCookie = CookieHelper.getCookie(request, Const.JWT_COOKIE_NAME);
-
-        if (jwtCookie == null)  return;
-        jwtCookie.setMaxAge(0);
-        response.addCookie(jwtCookie);
+        jwtHandler.removeJwt(request, response);
     }
 
 }

@@ -49,7 +49,7 @@ public class AuthAspect {
     protected void doCheckRole(String role){
         Cookie cookie = CookieHelper.getCookie(request, Const.JWT_COOKIE_NAME);
         if (cookie == null)
-            throw new BadRequest400Exception("please login");
+            throw new Forbidden403Exception("please login");
 
         BasicDBObject payload = null;
         StringBuffer jwtReason = new StringBuffer();
@@ -57,9 +57,9 @@ public class AuthAspect {
             payload = JwtHelper.getPayload(cookie.getValue(), jwtReason);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new BadRequest400Exception(jwtReason.toString());
+            throw new Forbidden403Exception(jwtReason.toString());
         }
-        if (payload == null) throw new BadRequest400Exception(jwtReason.toString());
+        if (payload == null) throw new Forbidden403Exception(jwtReason.toString());
 
         //如果为管理员则直接返回
         if (payload.get("role").equals("admin")) return;
