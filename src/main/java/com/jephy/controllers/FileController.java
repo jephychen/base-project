@@ -40,14 +40,6 @@ public class FileController {
         downloadService.downloadFile(response, file);
     }
 
-    /*
-    @AuthCommon
-    @RequestMapping(method = RequestMethod.POST)
-    public void uploadFile(@RequestParam("file") MultipartFile file){
-        storageService.store(file);
-    }
-    */
-
     @AuthCommon
     @RequestMapping(method = RequestMethod.POST)
     public void uploadFiles(MultipartHttpServletRequest request){

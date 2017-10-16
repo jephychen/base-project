@@ -12,6 +12,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.io.SAXReader;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -32,8 +35,7 @@ import java.util.zip.GZIPInputStream;
  * @author dapengniao
  * @date 2016 年 3 月 10 日 下午 3:57:14
  */
-@SuppressWarnings("deprecation")
-public class HttpUtils {
+public class HttpHelper {
 
     /**
      * @Description: http get 请求共用方法
@@ -130,7 +132,7 @@ public class HttpUtils {
      * @date 2016 年 3 月 10 日 下午 3:58:15
      */
     public static String sendPostBuffer(String urls, String params)
-            throws ClientProtocolException, IOException {
+            throws IOException {
         HttpPost request = new HttpPost(urls);
 
         StringEntity se = new StringEntity(params, HTTP.UTF_8);
@@ -153,70 +155,78 @@ public class HttpUtils {
      * @author dapengniao
      * @date 2016 年 3 月 10 日 下午 3:58:32
      */
-    public static String sendXmlPost(String urlStr, String xmlInfo) {
+    public static String sendXmlPost(String urlStr, String xmlInfo) throws Exception {
         // xmlInfo xml 具体字符串
-
-        try {
-            URL url = new URL(urlStr);
-            URLConnection con = url.openConnection();
-            con.setDoOutput(true);
-            con.setRequestProperty("Pragma:", "no-cache");
-            con.setRequestProperty("Cache-Control", "no-cache");
-            con.setRequestProperty("Content-Type", "text/xml");
-            OutputStreamWriter out = new OutputStreamWriter(
-                    con.getOutputStream());
-            out.write(new String(xmlInfo.getBytes("utf-8")));
-            out.flush();
-            out.close();
-            BufferedReader br = new BufferedReader(new InputStreamReader(
-                    con.getInputStream()));
-            String lines = "";
-            for (String line = br.readLine(); line != null; line = br
-                    .readLine()) {
-                lines = lines + line;
-            }
-            return lines; // 返回请求结果
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        URL url = new URL(urlStr);
+        URLConnection con = url.openConnection();
+        con.setDoOutput(true);
+        con.setRequestProperty("Pragma", "no-cache");
+        con.setRequestProperty("Cache-Control", "no-cache");
+        con.setRequestProperty("Content-Type", "text/xml");
+        OutputStreamWriter out = new OutputStreamWriter(
+                con.getOutputStream());
+        out.write(new String(xmlInfo.getBytes("utf-8")));
+        out.flush();
+        out.close();
+        BufferedReader br = new BufferedReader(new InputStreamReader(
+                con.getInputStream()));
+        String lines = "";
+        for (String line = br.readLine(); line != null; line = br
+                .readLine()) {
+            lines = lines + line;
         }
-        return "fail";
+
+        return lines; // 返回请求结果
     }
 
-    private static String getJsonStringFromGZIP(InputStream is) {
+    public static Document sendXmlPostXml(String urlStr, String xmlInfo) throws Exception {
+        URL url = new URL(urlStr);
+        URLConnection con = url.openConnection();
+        con.setDoOutput(true);
+        con.setRequestProperty("Pragma", "no-cache");
+        con.setRequestProperty("Cache-Control", "no-cache");
+        con.setRequestProperty("Content-Type", "text/xml");
+        OutputStreamWriter out = new OutputStreamWriter(
+                con.getOutputStream());
+        out.write(new String(xmlInfo.getBytes("utf-8")));
+        out.flush();
+        out.close();
+        SAXReader reader = new SAXReader();
+        Document document = reader.read(new InputStreamReader(con.getInputStream()));
+
+        return document;
+    }
+
+    private static String getJsonStringFromGZIP(InputStream is) throws IOException {
         String jsonString = null;
-        try {
-            BufferedInputStream bis = new BufferedInputStream(is);
-            bis.mark(2);
-            // 取前两个字节
-            byte[] header = new byte[2];
-            int result = bis.read(header);
-            // reset 输入流到开始位置
-            bis.reset();
-            // 判断是否是 GZIP 格式
-            int headerData = getShort(header);
-            // Gzip 流 的前两个字节是 0x1f8b
-            if (result != -1 && headerData == 0x1f8b) {
-                // LogUtil.i("HttpTask", " use GZIPInputStream  ");
-                is = new GZIPInputStream(bis);
-            } else {
-                // LogUtil.d("HttpTask", " not use GZIPInputStream");
-                is = bis;
-            }
-            InputStreamReader reader = new InputStreamReader(is, "utf-8");
-            char[] data = new char[100];
-            int readSize;
-            StringBuffer sb = new StringBuffer();
-            while ((readSize = reader.read(data)) > 0) {
-                sb.append(data, 0, readSize);
-            }
-            jsonString = sb.toString();
-            bis.close();
-            reader.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        BufferedInputStream bis = new BufferedInputStream(is);
+        bis.mark(2);
+        // 取前两个字节
+        byte[] header = new byte[2];
+        int result = bis.read(header);
+        // reset 输入流到开始位置
+        bis.reset();
+        // 判断是否是 GZIP 格式
+        int headerData = getShort(header);
+        // Gzip 流 的前两个字节是 0x1f8b
+        if (result != -1 && headerData == 0x1f8b) {
+            // LogUtil.i("HttpTask", " use GZIPInputStream  ");
+            is = new GZIPInputStream(bis);
+        } else {
+            // LogUtil.d("HttpTask", " not use GZIPInputStream");
+            is = bis;
         }
+        InputStreamReader reader = new InputStreamReader(is, "utf-8");
+        char[] data = new char[100];
+        int readSize;
+        StringBuffer sb = new StringBuffer();
+        while ((readSize = reader.read(data)) > 0) {
+            sb.append(data, 0, readSize);
+        }
+        jsonString = sb.toString();
+        bis.close();
+        reader.close();
 
         return jsonString;
     }
