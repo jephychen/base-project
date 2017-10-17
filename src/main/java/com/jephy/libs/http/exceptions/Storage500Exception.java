@@ -1,16 +1,16 @@
-package com.jephy.libs.httpexceptions;
+package com.jephy.libs.http.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-public class StorageException extends RuntimeException {
+public class Storage500Exception extends RuntimeException {
 
-    public StorageException(String message) {
+    public Storage500Exception(String message) {
         super(message);
     }
 
-    public StorageException(String message, Throwable cause) {
+    public Storage500Exception(String message, Throwable cause) {
         super(message, cause);
     }
 }

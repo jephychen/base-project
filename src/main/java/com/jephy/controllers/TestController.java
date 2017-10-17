@@ -1,7 +1,7 @@
 package com.jephy.controllers;
 
 import com.jephy.libs.http.HttpNioHelper;
-import com.jephy.libs.httpexceptions.InternalServerError500Exception;
+import com.jephy.libs.http.exceptions.InternalServerError500Exception;
 import org.dom4j.DocumentException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,7 +22,7 @@ public class TestController {
 
     @RequestMapping(method = RequestMethod.GET, produces="application/json;charset=UTF-8")
     public String test(){
-        String url = "https://api.mch.weixin.qq.com/pay/uniifiedorder";
+        String url = "https://api.mch.weixin.qq.com/pay/unifiedorder";
         Map<String, String> params = new HashMap<>();
         params.put("limit", "2");
         params.put("page", "1");

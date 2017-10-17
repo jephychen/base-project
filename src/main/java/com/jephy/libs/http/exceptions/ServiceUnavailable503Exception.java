@@ -1,4 +1,4 @@
-package com.jephy.libs.httpexceptions;
+package com.jephy.libs.http.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

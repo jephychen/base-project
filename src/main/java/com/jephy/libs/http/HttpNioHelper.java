@@ -1,6 +1,6 @@
 package com.jephy.libs.http;
 
-import com.jephy.libs.httpexceptions.ServiceUnavailable503Exception;
+import com.jephy.libs.http.exceptions.ServiceUnavailable503Exception;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;

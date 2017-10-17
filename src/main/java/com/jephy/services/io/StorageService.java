@@ -1,7 +1,7 @@
 package com.jephy.services.io;
 
-import com.jephy.libs.httpexceptions.StorageException;
-import com.jephy.libs.httpexceptions.StorageFileNotFoundException;
+import com.jephy.libs.http.exceptions.Storage500Exception;
+import com.jephy.libs.http.exceptions.StorageFileNotFound500Exception;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -33,26 +33,26 @@ public class StorageService {
     public void store(MultipartFile file) {
         try {
             if (file.isEmpty()) {
-                throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
+                throw new Storage500Exception("Failed to store empty file " + file.getOriginalFilename());
             }
 
             Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()),
                     StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
+            throw new Storage500Exception("Failed to store file " + file.getOriginalFilename(), e);
         }
     }
 
     public void storeToPath(MultipartFile file, Path dest){
         try {
             if (file.isEmpty()) {
-                throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
+                throw new Storage500Exception("Failed to store empty file " + file.getOriginalFilename());
             }
 
             Files.copy(file.getInputStream(), dest.resolve(file.getOriginalFilename()),
                     StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
+            throw new Storage500Exception("Failed to store file " + file.getOriginalFilename(), e);
         }
     }
 
@@ -62,7 +62,7 @@ public class StorageService {
                     .filter(path -> !path.equals(this.rootLocation))
                     .map(path -> this.rootLocation.relativize(path));
         } catch (IOException e) {
-            throw new StorageException("Failed to read stored files", e);
+            throw new Storage500Exception("Failed to read stored files", e);
         }
 
     }
@@ -79,11 +79,11 @@ public class StorageService {
                 return resource;
             }
             else {
-                throw new StorageFileNotFoundException("Could not read file: " + filename);
+                throw new StorageFileNotFound500Exception("Could not read file: " + filename);
 
             }
         } catch (MalformedURLException e) {
-            throw new StorageFileNotFoundException("Could not read file: " + filename, e);
+            throw new StorageFileNotFound500Exception("Could not read file: " + filename, e);
         }
     }
 
@@ -95,7 +95,7 @@ public class StorageService {
         try {
             Files.createDirectory(rootLocation);
         } catch (IOException e) {
-            throw new StorageException("Could not initialize storage", e);
+            throw new Storage500Exception("Could not initialize storage", e);
         }
     }
 
