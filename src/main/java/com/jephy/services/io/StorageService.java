@@ -1,7 +1,7 @@
 package com.jephy.services.io;
 
-import com.jephy.utils.httpexceptions.StorageException;
-import com.jephy.utils.httpexceptions.StorageFileNotFoundException;
+import com.jephy.libs.httpexceptions.StorageException;
+import com.jephy.libs.httpexceptions.StorageFileNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;

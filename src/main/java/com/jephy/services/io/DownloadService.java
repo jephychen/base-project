@@ -1,6 +1,6 @@
 package com.jephy.services.io;
 
-import com.jephy.utils.httpexceptions.InternalServerError500Exception;
+import com.jephy.libs.httpexceptions.InternalServerError500Exception;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;

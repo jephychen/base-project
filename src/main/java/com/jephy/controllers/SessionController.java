@@ -1,14 +1,12 @@
 package com.jephy.controllers;
 
 import com.jephy.api.JwtHandler;
-import com.jephy.libs.Const;
 import com.jephy.libs.JwtHelper;
-import com.jephy.libs.http.CookieHelper;
 import com.jephy.libs.json.JsonHelper;
 import com.jephy.models.User;
 import com.jephy.services.UserService;
-import com.jephy.utils.httpexceptions.BadRequest400Exception;
-import com.jephy.utils.httpexceptions.InternalServerError500Exception;
+import com.jephy.libs.httpexceptions.BadRequest400Exception;
+import com.jephy.libs.httpexceptions.InternalServerError500Exception;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
