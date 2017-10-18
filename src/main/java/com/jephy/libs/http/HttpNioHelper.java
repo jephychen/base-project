@@ -31,6 +31,12 @@ import java.util.zip.GZIPInputStream;
  */
 public class HttpNioHelper {
 
+    /**
+     * send GET request to url
+     * @param url target address
+     * @param params parameters ordered by map
+     * @return result in string
+     * */
     public static String get(String url, Map<String, String> params) throws ExecutionException,
             InterruptedException, IOException {
         String urlWithParams = buildUrl(url, params);
@@ -46,6 +52,12 @@ public class HttpNioHelper {
         throw new ServiceUnavailable503Exception("external service unavailable");
     }
 
+    /**
+     * send POST request to url
+     * @param url target address
+     * @param params parameters ordered by map
+     * @return result in string
+     * */
     public static String post(String url, Map<String, String> params) throws IOException,
             ExecutionException, InterruptedException {
         HttpPost request = createHttpPost(url, params);
@@ -59,6 +71,12 @@ public class HttpNioHelper {
         throw new ServiceUnavailable503Exception("external service unavailable");
     }
 
+    /**
+     * send POST request to url
+     * @param url target address
+     * @param params parameters in string, such as json string
+     * @return result in string
+     * */
     public static String post(String url, String params) throws IOException, InterruptedException,
             ExecutionException {
         HttpPost request = createHttpPost(url, null);
@@ -73,6 +91,12 @@ public class HttpNioHelper {
         throw new ServiceUnavailable503Exception("external service unavailable");
     }
 
+    /**
+     * send POST request to url, parameters in xml format, get xml result
+     * @param url target address
+     * @param xmlData parameters in string, conforming xml format
+     * @return result in xml Document
+     * */
     public static Document postXml(String url, String xmlData) throws IOException, InterruptedException,
             ExecutionException, DocumentException {
         HttpPost request = createHttpPost(url, null);
