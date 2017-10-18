@@ -46,6 +46,8 @@ public class HttpNioHelper {
         HttpResponse response = sendRequest(request);
 
         int statusCode = response.getStatusLine().getStatusCode();
+
+        //此处避免考虑调用restful接口的问题，只考虑调用一般接口
         if (statusCode >= 200 && statusCode < 300)
             return getJsonStringFromGZIP(response.getEntity().getContent());
 
